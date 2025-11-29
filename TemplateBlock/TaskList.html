@@ -1,0 +1,72 @@
+{% extends "Base.html" %}
+
+{% block title %}Список Усіх Завдань 🌿{% endblock %}
+
+{% block content %}
+    <h2 class="content-title pb-2 mb-4 border-bottom" style="border-color: var(--color-mint-accent) !important;">
+        <span>📋</span> Список Усіх Завдань
+    </h2>
+    
+    <a href="/task/create/" class="btn btn-lg mb-3" style="
+        background-color: var(--color-mint-accent);
+        color: var(--color-text);
+        border-color: #81c784; 
+    ">
+        ➕ Додатити Нове Завдання
+    </a>
+    
+    {% if taskslist %} 
+        
+        <style>
+            .status-make { background-color: #ffcdd2; color: #c62828; font-weight: bold; }
+            .status-inprogress { background-color: #fff9c4; color: #fbc02d; font-weight: bold; }
+            .status-complete { background-color: #c8e6c9; color: #388e3c; font-weight: bold; }
+            .status-declined { background-color: #e0e0e0; color: #616161; font-weight: bold; }
+            
+            .table-striped > tbody > tr:nth-of-type(odd) {
+                background-color: #f1f8e9;
+            }
+        </style>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead style="background-color: var(--color-mint-accent); color: var(--color-text);">
+                    <tr>
+                        <th>Заголовок</th>
+                        <th>Опис</th>
+                        <th>Статус</th>
+                        <th>Пріоритет</th>
+                        <th>Дата виконання</th>
+                        <th>Творець</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in taskslist %}
+                        <tr>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.description|truncatechars:70 }}</td>
+                            <td class="status-{{ task.status }}">
+                                {{ task.get_status_display }}
+                            </td>
+                            <td>{{ task.get_priorites_display }}</td>
+                            <td>{{ task.datetocm|date:"Y-m-d H:i" }}</td>
+                            <td>{{ task.creator.username }}</td>
+                            <td>
+                                <a href="/task/update/{{ task.id }}/" class="btn btn-warning btn-sm">📝 Редагувати</a>
+                                <a href="/task/delete/{{ task.id }}/" class="btn btn-danger btn-sm">🗑️ Видалити</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info text-center" style="border-color: var(--color-mint-accent); background-color: #f1f8e9;">
+            Наразі завдань немає. Це ідеальний час, щоб 
+            <a href="/task/create/" class="alert-link" style="color: var(--color-text);">створити перше!</a> 🚀
+        </div>
+    {% endif %}
+
+{% endblock %}
