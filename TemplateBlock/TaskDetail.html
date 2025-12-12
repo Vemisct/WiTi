@@ -1,0 +1,47 @@
+{% extends "Base.html" %}
+
+{% block title %}Список Усіх Завдань 🌿{% endblock %}
+
+{% block content %}
+
+    <h2 class="content-title pb-2 mb-4 border-bottom" style="border-color: var(--color-mint-accent) !important;">
+        <span>📋</span> Інформація про завдання
+    </h2>
+
+    <style>
+        .status-make { background-color: #ffcdd2; color: #c62828; font-weight: bold; }
+        .status-inprogress { background-color: #fff9c4; color: #fbc02d; font-weight: bold; }
+        .status-complete { background-color: #c8e6c9; color: #388e3c; font-weight: bold; }
+        .status-declined { background-color: #e0e0e0; color: #616161; font-weight: bold; }
+        
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: var(--color-stripe-odd);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .table-striped > tbody > tr:nth-of-type(odd) {
+                background-color: var(--color-stripe-odd);
+            }
+            .table thead {
+                color: var(--color-text) !important;
+            }
+        }
+    </style>
+    
+    <div class="table-responsive">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{task.title}}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Творець: {{task.creator.username}}</h6>
+                <p class="card-text">{{task.description}}<br>
+                    Пріорітет: {{task.priorities}} | Статус: {{task.status}}<br>
+                    Дата закінчення: {{task.datetocm}}
+                </p>
+                <a href="{% url 'WTTaskUpdate' task.pk %}" class="btn btn-outline-warning btn-lg">📝 Редагувати</a>
+                <a href="{% url 'WTTaskDelete' task.pk %}" class="btn btn-outline-danger btn-lg">🗑️ Видалити</a>
+                <a href="{% url 'WTTaskList' %}" class="btn btn-outline-secondary btn-lg">⬅ До Списку</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

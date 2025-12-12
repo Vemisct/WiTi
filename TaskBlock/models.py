@@ -21,7 +21,7 @@ class Task(models.Model):
     description = models.TextField(verbose_name="Опис")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='make', verbose_name="Статус")
     priorites = models.CharField(max_length=5, choices=PRIORITY_CHOICES, default='i', verbose_name="Пріоритет")
-    datetocm = models.DateTimeField(verbose_name="Дата виконання")
+    datetocm = models.DateTimeField(verbose_name="Дата закінчення")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks', verbose_name="Творець")
 
     class Meta:
@@ -31,3 +31,19 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class Comment(models.Model):
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='coments', verbose_name="Коментар")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='coments', verbose_name="Творець")
+    text = models.TextField()
+    upltime = models.TimeField()
+
+    class Meta:
+        verbose_name = "Коментар"
+        verbose_name_plural = "Коментарі"
+        ordering = ['upltime'] 
+
+    def __str__(self):
+        return self.text
