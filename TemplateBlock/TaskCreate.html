@@ -1,42 +1,42 @@
 {% extends "Base.html" %}
 
-{% block title %}Додавання Завдання 🚀{% endblock %}
+{% block title %}WiTi - Нове завдання{% endblock %}
 
 {% block content %}
-    <h2 class="content-title pb-2 mb-4 border-bottom" style="border-color: var(--color-mint-accent) !important;">
-        <span>➕</span> Додавання Нового Завдання
-    </h2>
+<div class="max-width-md mx-auto" style="max-width: 800px;">
+    <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+        <h2 class="text-body-emphasis mb-0">🚀 Створення нового завдання</h2>
+    </div>
 
-    <form method="post">
-        {% csrf_token %}
-        
-        {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-                Помилка форми:
-                {% for error in form.non_field_errors %}
-                    <p class="mb-0">{{ error }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        {% for field in form %}
-            <div class="mb-3"> 
-                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+    <div class="card border shadow-sm bg-body">
+        <div class="card-body p-4">
+            <form method="post">
+                {% csrf_token %}
                 
-                {{ field }}
-                
-                {% for error in field.errors %}
-                    <div class="invalid-feedback d-block">
-                        ⚠️ {{ error }}
+                {% for field in form %}
+                    <div class="mb-4">
+                        <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endfor %}
-            </div>
-        {% endfor %}
-        
-        <button type="submit" class="btn btn-lg mt-3" style="
-            background-color: var(--color-mint-accent);
-            color: var(--color-text);
-            border-color: #81c784;
-        ">Зберегти Завдання</button>
-    </form>
+
+                <div class="mt-5 d-flex gap-3">
+                    <button type="submit" class="btn btn-outline-success px-5 fw-bold">
+                        <i class="bi bi-check-lg"></i> Зберегти завдання
+                    </button>
+                    <a href="{% url 'WTTaskList' %}" class="btn btn-outline-secondary px-4">
+                        Скасувати
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "Base.html" %}
+
+{% block title %}Вхід в систему{% endblock %}
+
+{% block content %}
+    <h1 class="text-success fw-bold mb-0">Вхід</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-outline-success px-5 fw-bold">
+            <i class="bi bi-save"></i>Увійти
+        </button>
+        <p>Не зареєстрований? <a href="{% url 'WTUserRegister' %}">Зареєструйся!</a></p>
+    </form>
+{% endblock %}

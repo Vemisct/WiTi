@@ -38,7 +38,7 @@ class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='coments', verbose_name="Коментар")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='coments', verbose_name="Творець")
     text = models.TextField()
-    upltime = models.TimeField()
+    upltime = models.TimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Коментар"

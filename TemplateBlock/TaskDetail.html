@@ -1,47 +1,104 @@
 {% extends "Base.html" %}
 
-{% block title %}Список Усіх Завдань 🌿{% endblock %}
+{% block title %}Деталі завдання - {{ task.title }}{% endblock %}
 
 {% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm bg-dark text-white rounded-4 overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-success fw-bold mb-0">{{ task.title }}</h2>
+                    <span class="badge bg-primary rounded-pill px-3 py-2">
+                        {{ task.get_status_display }}
+                    </span>
+                </div>
 
-    <h2 class="content-title pb-2 mb-4 border-bottom" style="border-color: var(--color-mint-accent) !important;">
-        <span>📋</span> Інформація про завдання
-    </h2>
+                <div class="d-flex align-items-center mb-4 text-secondary">
+                    <i class="bi bi-person-circle me-2"></i>
+                    <span>Автор: <strong>{{ task.creator.username }}</strong></span>
+                </div>
 
-    <style>
-        .status-make { background-color: #ffcdd2; color: #c62828; font-weight: bold; }
-        .status-inprogress { background-color: #fff9c4; color: #fbc02d; font-weight: bold; }
-        .status-complete { background-color: #c8e6c9; color: #388e3c; font-weight: bold; }
-        .status-declined { background-color: #e0e0e0; color: #616161; font-weight: bold; }
-        
-        .table-striped > tbody > tr:nth-of-type(odd) {
-            background-color: var(--color-stripe-odd);
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .table-striped > tbody > tr:nth-of-type(odd) {
-                background-color: var(--color-stripe-odd);
-            }
-            .table thead {
-                color: var(--color-text) !important;
-            }
-        }
-    </style>
-    
-    <div class="table-responsive">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">{{task.title}}</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">Творець: {{task.creator.username}}</h6>
-                <p class="card-text">{{task.description}}<br>
-                    Пріорітет: {{task.priorities}} | Статус: {{task.status}}<br>
-                    Дата закінчення: {{task.datetocm}}
-                </p>
-                <a href="{% url 'WTTaskUpdate' task.pk %}" class="btn btn-outline-warning btn-lg">📝 Редагувати</a>
-                <a href="{% url 'WTTaskDelete' task.pk %}" class="btn btn-outline-danger btn-lg">🗑️ Видалити</a>
-                <a href="{% url 'WTTaskList' %}" class="btn btn-outline-secondary btn-lg">⬅ До Списку</a>
+                <div class="p-4 rounded-3 border border-secondary mb-4" style="background-color: #2b2d31;">
+                    <p class="mb-0 fs-5">
+                        {% if task.description %}{{ task.description|linebreaks }}{% else %}Немає опису{% endif %}
+                    </p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 border border-danger shadow-sm h-100" style="background-color: #2d1a1c;">
+                            <small class="text-uppercase fw-bold text-danger d-block mb-1">Пріоритет</small>
+                            <div class="h5 mb-0 text-danger-emphasis">
+                                <i class="bi bi-fire"></i> {{ task.get_priorites_display }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 border border-success shadow-sm h-100" style="background-color: #1a2d1d;">
+                            <small class="text-uppercase fw-bold text-success d-block mb-1">Крайній термін</small>
+                            <div class="h5 mb-0 text-success-emphasis">
+                                <i class="bi bi-calendar-event"></i> {{ task.datetocm|date:"d.m.Y H:i" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 pt-3 border-top border-secondary">
+                    <a href="{% url 'WTTaskUpdate' task.pk %}" class="btn btn-outline-warning rounded-3 px-4">
+                        <i class="bi bi-pencil-square"></i> Редагувати
+                    </a>
+                    <a href="{% url 'WTTaskDelete' task.pk %}" class="btn btn-outline-danger rounded-3 px-4">
+                        <i class="bi bi-trash"></i> Видалити
+                    </a>
+                    <a href="{% url 'WTTaskList' %}" class="btn btn-outline-secondary rounded-3 ms-auto px-4">
+                        <i class="bi bi-arrow-left"></i> Назад
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="col-lg-4">
+        <h4 class="h5 mb-3 d-flex align-items-center text-white">
+            <i class="bi bi-chat-right-dots me-2 text-success"></i> Коментарі
+        </h4>
+        
+        <div class="mb-3 custom-scrollbar" style="max-height: 480px; overflow-y: auto;">
+            {% for comment in task.coments.all %}
+                <div class="p-3 mb-3 rounded-3 border border-secondary shadow-sm" style="background-color: #2b2d31;">
+                    <div class="d-flex justify-content-between border-bottom border-secondary pb-1 mb-2">
+                        <strong class="text-success small">{{ comment.author.username }}</strong>
+                        <small class="text-muted" style="font-size: 0.75rem;">{{ comment.upltime|time:"H:i" }}</small>
+                    </div>
+                    <p class="mb-0 text-white-50 small">{{ comment.text }}</p>
+                </div>
+            {% empty %}
+                <div class="text-center py-5 border border-secondary rounded-3 bg-dark opacity-50">
+                    <p class="text-muted small mb-0">Тут поки порожньо...</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4" style="background-color: #2b2d31;">
+            <div class="card-body p-3">
+                <form method="post">
+                    {% csrf_token %}
+                    <textarea name="text" class="form-control mb-2 border-secondary text-white shadow-none" 
+                              style="background-color: #1e1f22;" rows="3" placeholder="Напишіть щось..." required></textarea>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm">
+                        <i class="bi bi-send-fill me-1"></i> Надіслати
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #4a4d52; border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-mint-accent); }
+</style>
 {% endblock %}

@@ -1,88 +1,63 @@
 {% extends "Base.html" %}
 
-{% block title %}Список Усіх Завдань 🌿{% endblock %}
-
 {% block content %}
-    <h2 class="content-title pb-2 mb-4 border-bottom" style="border-color: var(--color-mint-accent) !important;">
-        <span>📋</span> Список Усіх Завдань
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="text-body-emphasis mb-0">📋 Мої Завдання</h2>
+        <a href="{% url 'WTTaskCreate' %}" class="btn btn-outline-success">
+            <i class="bi bi-plus-lg"></i> Нове завдання
+        </a>
+    </div>
     
-    <a href="{% url 'WTTaskCreate' %}" class="btn btn-lg mb-3 btn-primary-custom">
-        ➕ Додатити Нове Завдання
-    </a>
-    
-    {% if taskslist %} 
-        
-        <style>
-            .status-make { border-color: #ffcdd2; color: #c62828; }
-            .status-inprogress { border-color: #fff9c4; color: #fbc02d; }
-            .status-complete { border-color: #c8e6c9; color: #388e3c; }
-            .status-declined { border-color: #e0e0e0; color: #616161; }
-            
-            .task-card {
-                background-color: var(--color-content-bg);
-                border: 1px solid var(--color-mint-accent);
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition: transform 0.2s, box-shadow 0.2s;
-            }
-            .task-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-            }
-            .task-status-badge {
-                font-weight: bold;
-            }
-            
-            @media (prefers-color-scheme: dark) {
-                .task-card .card-text, .task-card small {
-                    color: var(--color-text) !important;
-                }
-            }
-        </style>
-        
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            {% for task in taskslist %}
-                <div class="col">
-                    <div class="card h-100 task-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0 fs-1" style="color: var(--color-button-hover-effect);">
-                                    - {{ task.title }} -
-                                </h5>
-                                <span class="task-status-badge status-{{ task.status }} fs-3">
-                                    - {{ task.get_status_display }}
-                                </span>
-                            </div>
-
-                            <p class="card-text mb-3 fs-4">
-                                Творець: {{ task.creator.username }} | 
-                                Пріоритет: {{ task.get_priorites_display }}
-                            </p>
-
-                            <p class="card-text fs-4">{{ task.description|truncatechars:120 }}</p>
-                            
-                            <ul class="list-group list-group-flush mb-3" style="background-color: var(--color-content-bg);">
-                                <li class="list-group-item fs-4" style="background-color: var(--color-content-bg); color: var(--color-text); border-color: var(--color-stripe-odd);">
-                                    Дата виконання: {{ task.datetocm|date:"Y-m-d H:i" }}
-                                </li>
-                            </ul>
-                            
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for task in taskslist %}
+            <div class="col">
+                <div class="card h-100 border shadow-sm bg-body">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title text-success fw-bold mb-0">{{ task.title }}</h5>
+                            <span class="badge border text-secondary small">{{ task.get_status_display }}</span>
                         </div>
-                        <div class="card-footer d-flex justify-content-between" style="background-color: var(--color-stripe-odd); border-color: var(--color-mint-accent);">
-                            <a href="{% url 'WTTaskDetail' task.pk %}" class="btn btn-outline-info btn-sm">📋 Деталі</a>
-                            <a href="{% url 'WTTaskUpdate' task.pk %}" class="btn btn-outline-warning btn-sm">📝 Редагувати</a>
-                            <a href="{% url 'WTTaskDelete' task.pk %}" class="btn btn-outline-danger btn-sm">🗑️ Видалити</a>
+                        
+                        <p class="text-muted small mb-3">👤 {{ task.creator.username }}</p>
+
+                        <p class="card-text">{{ task.description|truncatechars:100 }}</p>
+                        
+                        <div class="row g-2 mt-2">
+                            <div class="col-12">
+                                <div class="p-2 rounded bg-body-tertiary border small">
+                                    <div class="mb-1">
+                                        <i class="bi bi-fire text-danger me-1"></i> 
+                                        <strong>Пріоритет:</strong> {{ task.get_priorites_display }}
+                                    </div>
+                                    <div class="text-danger fw-bold">
+                                        <i class="bi bi-calendar-event me-1"></i> 
+                                        <strong>Дедлайн:</strong> {{ task.datetocm|date:"d.m.Y H:i" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-body-secondary border-top d-flex justify-content-between py-3">
+                        <a href="{% url 'WTTaskDetail' task.pk %}" class="btn btn-sm btn-outline-info px-3">
+                            <i class="bi bi-eye"></i> Деталі
+                        </a>
+                        <div class="btn-group">
+                            <a href="{% url 'WTTaskUpdate' task.pk %}" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'WTTaskDelete' task.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-
-    {% else %}
-        <div class="alert alert-info text-center" style="border-color: var(--color-mint-accent); background-color: var(--color-stripe-odd);">
-            Наразі завдань немає. Це ідеальний час, щоб 
-            <a href="{% url 'WTTaskCreate' %}" class="alert-link" style="color: var(--color-text);">створити перше!</a> 🚀
-        </div>
-    {% endif %}
-
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-journal-x fs-1 text-muted"></i>
+                <p class="text-muted mt-2">Список порожній. Час додати нове завдання!</p>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
